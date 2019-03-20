@@ -8,6 +8,7 @@ namespace UnitTesting
         {
             bool execute = true;
             string userSelection;
+            decimal balance = 2000;
 
             Console.WriteLine("Welcome to Bank of CF!");
             Console.WriteLine();
@@ -19,24 +20,23 @@ namespace UnitTesting
 
                 if(userSelection.ToUpper() == "1" || userSelection.ToUpper() == "VIEW BALANCE" || userSelection.ToUpper() == "VIEW" || userSelection.ToUpper() == "BALANCE")
                 {
-                    viewBalance();
-                    Console.WriteLine();
+                    displayBalance(balance);
                     Console.WriteLine("Please make another selection:");
                     userSelection = selectionPrompt();
                 }
 
                 else if (userSelection.ToUpper() == "2" || userSelection.ToUpper() == "WITHDRAW MONEY" || userSelection.ToUpper() == "WITHDRAW" || userSelection.ToUpper() == "WITHDRAWAL")
                 {
-                    withdrawMoney();
-                    Console.WriteLine();
+                    balance = withdrawMoney();
+                    displayBalance(balance);
                     Console.WriteLine("Please make another selection:");
                     userSelection = selectionPrompt();
                 }
 
                 else if (userSelection.ToUpper() == "3" || userSelection.ToUpper() == "ADD MONEY" || userSelection.ToUpper() == "ADD" || userSelection.ToUpper() == "DEPOSIT")
                 {
-                    addMoney();
-                    Console.WriteLine();
+                    balance = addMoney();
+                    displayBalance(balance);
                     Console.WriteLine("Please make another selection:");
                     userSelection = selectionPrompt();
                 }
@@ -68,9 +68,11 @@ namespace UnitTesting
             return Console.ReadLine();
         }
 
-        static int viewBalance()
+        static void displayBalance(decimal balance)
         {
-
+            Console.WriteLine();
+            Console.WriteLine($"Your new balance is: {balance.ToString("C")}");
+            Console.WriteLine();
         }
 
         static int withdrawMoney()
