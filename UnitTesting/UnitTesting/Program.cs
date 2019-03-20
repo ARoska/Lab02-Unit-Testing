@@ -85,7 +85,7 @@ namespace UnitTesting
         /// <summary>
         /// This simple method will convert the balance parameter into a string and display it on the console.
         /// </summary>
-        /// <param name="balance">User's current balance</param>
+        /// <param name="balance">User's current balance.</param>
         public static void displayBalance(decimal balance)
         {
             Console.WriteLine($"Your available balance is: {balance.ToString("C")}");
@@ -93,11 +93,11 @@ namespace UnitTesting
         }
 
         /// <summary>
-        /// This will take the user's current balance and add subtract the amount of their withdrawal, returning their new balance.
+        /// This will take the user's current balance and add subtract the amount of their withdrawal, returning their new balance.  The user cannot make negative withdrawals.
         /// </summary>
         /// <param name="balance">User's current balance</param>
-        /// <param name="value">Amount of money the user wishes to withdraw</param>
-        /// <returns>New balance after withdraw is removed</returns>
+        /// <param name="value">Amount of money the user wishes to withdraw.  Cannot be negative.  Cannot be more than balance.</param>
+        /// <returns>New balance after withdraw is removed.</returns>
         public static string withdrawMoney(decimal balance, decimal value)
         {
             if(value < 0)
@@ -119,14 +119,21 @@ namespace UnitTesting
         }
 
         /// <summary>
-        /// This will take the user's current balance and add the amount of their deposit, returning their new balance.
+        /// This will take the user's current balance and add the amount of their deposit, returning their new balance.  Cannot add negative deposits.
         /// </summary>
-        /// <param name="balance">User's current balance</param>
-        /// <param name="value">Amount of money the user wishers to deposit</param>
-        /// <returns>New balance after deposit is added</returns>
-        public static decimal addMoney(decimal balance, decimal value)
+        /// <param name="balance">User's current balance.</param>
+        /// <param name="value">Amount of money the user wishers to deposit.  Cannot be negative.</param>
+        /// <returns>New balance after deposit is added.</returns>
+        public static string addMoney(decimal balance, decimal value)
         {
-            return (balance + value);
+            if(value < 0)
+            {
+                return "Cannot deposit a negative amount.";
+            }
+
+            decimal newBalance = (balance + value);
+
+            return newBalance.ToString();
         }
     }
 }

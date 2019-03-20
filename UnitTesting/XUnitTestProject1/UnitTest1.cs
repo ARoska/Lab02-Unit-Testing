@@ -16,7 +16,7 @@ namespace XUnitTestProject1
             // Act
             string newBalance = Program.withdrawMoney(balance, withdrawal);
 
-            // Asert
+            // Assert
             Assert.Equal(expectedNewBalance, newBalance);
         }
 
@@ -29,7 +29,7 @@ namespace XUnitTestProject1
             // Act
             string exception = Program.withdrawMoney(balance, withdrawal);
 
-            // Asert
+            // Assert
             Assert.Equal(expectedException, exception);
         }
 
@@ -42,7 +42,34 @@ namespace XUnitTestProject1
             // Act
             string exception = Program.withdrawMoney(balance, withdrawal);
 
-            // Asert
+            // Assert
+            Assert.Equal(expectedException, exception);
+        }
+
+        [Theory]
+        [InlineData(2000, 100, "2100")]
+        [InlineData(100, 7, "107")]
+        [InlineData(100.52, 13.73, "114.25")]
+        [InlineData(732.85, 350.26, "1083.11")]
+        public void CanAddMoney(decimal balance, decimal deposit, string expectedBalance)
+        {
+            // Act
+            string newBalance = Program.addMoney(balance, deposit);
+
+            // Assert
+            Assert.Equal(expectedBalance, newBalance);
+        }
+
+        [Theory]
+        [InlineData(500, -9451213875.23, "Cannot deposit a negative amount.")]
+        [InlineData(500, -1, "Cannot deposit a negative amount.")]
+        [InlineData(500, -100, "Cannot deposit a negative amount.")]
+        public void CannotAddNegativeMoney(decimal balance, decimal deposit, string expectedException)
+        {
+            // Act
+            string exception = Program.addMoney(balance, deposit);
+
+            // Assert
             Assert.Equal(expectedException, exception);
         }
     }
