@@ -100,7 +100,10 @@ namespace UnitTesting
         /// <returns>New balance after withdraw is removed</returns>
         public static string withdrawMoney(decimal balance, decimal value)
         {
-
+            if(value < 0)
+            {
+                return "Cannot withdraw a negative amount.";
+            }
 
             decimal newBalance = (balance - value);
 
