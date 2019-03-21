@@ -28,10 +28,10 @@ Then select and open ```UnitTesting.sln```
 ## Visuals
 
 ##### Application Start
-![App start](https://via.placeholder.com/750x500)
+![App start](https://github.com/Roketsu86/Lab02-Unit-Testing/blob/master/Images/unit-testing-start.jpg)
 ##### Using the Application
-![App in use 1](https://via.placeholder.com/750x500)
-![App in use 2](https://via.placeholder.com/750x500)
+![App in use 1](https://github.com/Roketsu86/Lab02-Unit-Testing/blob/master/Images/unit-testing-use1.jpg)
+![App in use 2](https://github.com/Roketsu86/Lab02-Unit-Testing/blob/master/Images/unit-testing-use2.jpg)
 
 ------------------------------
 
