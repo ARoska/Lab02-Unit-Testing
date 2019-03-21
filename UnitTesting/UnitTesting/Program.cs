@@ -50,10 +50,26 @@ namespace UnitTesting
 
                 else if (userSelection.ToUpper() == "3" || userSelection.ToUpper() == "ADD MONEY" || userSelection.ToUpper() == "ADD" || userSelection.ToUpper() == "DEPOSIT")
                 {
-                    decimal value = 0;
-                    balance = Convert.ToDecimal(addMoney(balance, value));
-                    Console.Clear();
-                    displayBalance(balance);
+                    try
+                    {
+                        Console.WriteLine("How much would you like to deposit?");
+                        string depositInput = Console.ReadLine();
+
+                        newBalance = addMoney(balance, depositInput);
+
+                        balance = Convert.ToDecimal(newBalance);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong: {e}");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadKey();
+                    }
+                    finally
+                    {
+                        Console.Clear();
+                        displayBalance(balance);
+                    }
                 }
 
                 else if (userSelection.ToUpper() == "4" || userSelection.ToUpper() == "EXIT" || userSelection.ToUpper() == "QUIT" || userSelection.ToUpper() == "CLOSE" || userSelection.ToUpper() == "END")
@@ -94,15 +110,16 @@ namespace UnitTesting
 
         /// <summary>
         /// This will take the user's current balance as a string, convert it to a decimal,
-        /// and add subtract the amount of their withdrawal, returning their new balance.
+        /// and subtract the amount of their withdrawal, returning their new balance.
         /// The user cannot make negative withdrawals or put their balance into the negative.
         /// </summary>
         /// <param name="balance">User's current balance</param>
         /// <param name="value">Amount of money the user wishes to withdraw.  Cannot be negative.  Cannot be more than balance.</param>
-        /// <returns>New balance after withdraw is removed, or error message if operation fails.</returns>
+        /// <returns>New balance after withdraw is removed, or an error message if operation fails.</returns>
         public static string withdrawMoney(decimal balance, string value)
         {
             string newBalance;
+
             try
             {
                 decimal withdrawalValue = Convert.ToDecimal(value);
@@ -119,31 +136,54 @@ namespace UnitTesting
                 {
                     newBalance = Convert.ToString(balance - withdrawalValue);
                 }
+
+                return newBalance;
+            }
+            catch (FormatException)
+            {
+                throw new System.ArgumentException("Withdrawal amount MUST be a positive number.");
+            }
+            catch (OverflowException)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This will take the user's current balance as a string, convert it to a decimal,
+        /// and add the amount of their deposit, returning their new balance.
+        /// The user cannot make negative deposits.
+        /// </summary>
+        /// <param name="balance">User's current balance.</param>
+        /// <param name="value">Amount of money the user wishers to deposit.  Cannot be negative.</param>
+        /// <returns>New balance after deposit is added, or an error message if the operation fails.</returns>
+        public static string addMoney(decimal balance, string value)
+        {
+            string newBalance;
+
+            try
+            {
+                decimal depositValue = Convert.ToDecimal(value);
+
+                if (depositValue < 0)
+                {
+                    newBalance = "Cannot deposit a negative amount.";
+                }
+                else
+                {
+                    newBalance = Convert.ToString(balance + depositValue);
+                }
+
                 return newBalance.ToString();
             }
             catch (FormatException)
             {
-                throw new System.ArgumentException("Withdrawal amount must be a positive number.");
+                throw new System.ArgumentException("Deposit MUST be a positive number.");
             }
-
-        }
-
-        /// <summary>
-        /// This will take the user's current balance and add the amount of their deposit, returning their new balance.  Cannot add negative deposits.
-        /// </summary>
-        /// <param name="balance">User's current balance.</param>
-        /// <param name="value">Amount of money the user wishers to deposit.  Cannot be negative.</param>
-        /// <returns>New balance after deposit is added.</returns>
-        public static string addMoney(decimal balance, decimal value)
-        {
-            if (value < 0)
+            catch (OverflowException)
             {
-                return "Cannot deposit a negative amount.";
+                throw;
             }
-
-            decimal newBalance = (balance + value);
-
-            return newBalance.ToString();
         }
     }
 }

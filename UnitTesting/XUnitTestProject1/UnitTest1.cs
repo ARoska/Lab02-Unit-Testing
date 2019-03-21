@@ -47,11 +47,11 @@ namespace XUnitTestProject1
         }
 
         [Theory]
-        [InlineData(2000, 100, "2100")]
-        [InlineData(100, 7, "107")]
-        [InlineData(100.52, 13.73, "114.25")]
-        [InlineData(732.85, 350.26, "1083.11")]
-        public void CanAddMoney(decimal balance, decimal deposit, string expectedBalance)
+        [InlineData(2000, "100", "2100")]
+        [InlineData(100, "7", "107")]
+        [InlineData(100.52, "13.73", "114.25")]
+        [InlineData(732.85, "350.26", "1083.11")]
+        public void CanAddMoney(decimal balance, string deposit, string expectedBalance)
         {
             // Act
             string newBalance = Program.addMoney(balance, deposit);
@@ -61,10 +61,10 @@ namespace XUnitTestProject1
         }
 
         [Theory]
-        [InlineData(500, -9451213875.23, "Cannot deposit a negative amount.")]
-        [InlineData(500, -1, "Cannot deposit a negative amount.")]
-        [InlineData(500, -100, "Cannot deposit a negative amount.")]
-        public void CannotAddNegativeMoney(decimal balance, decimal deposit, string expectedException)
+        [InlineData(500, "-9451213875.23", "Cannot deposit a negative amount.")]
+        [InlineData(500, "-1", "Cannot deposit a negative amount.")]
+        [InlineData(500, "-100", "Cannot deposit a negative amount.")]
+        public void CannotAddNegativeMoney(decimal balance, string deposit, string expectedException)
         {
             // Act
             string exception = Program.addMoney(balance, deposit);
