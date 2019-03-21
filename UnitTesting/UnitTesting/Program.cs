@@ -8,20 +8,19 @@ namespace UnitTesting
         {
             bool execute = true;
             string userSelection;
-            decimal balance = 2000.32659M;
-            string newBalance;
+            decimal currentBalance = 2000.32659M;
 
             Console.WriteLine("Welcome to Bank of CF!");
             Console.WriteLine();
-            userSelection = displayBalance(balance);
+            userSelection = displayMenu();
 
             do
             {
 
                 if (userSelection.ToUpper() == "1" || userSelection.ToUpper() == "VIEW BALANCE" || userSelection.ToUpper() == "VIEW" || userSelection.ToUpper() == "BALANCE")
                 {
-                    Console.Clear();
-                    userSelection = displayBalance(balance);
+                    displayBalance(currentBalance, Convert.ToString(currentBalance));
+                    userSelection = displayMenu();
                 }
 
                 else if (userSelection.ToUpper() == "2" || userSelection.ToUpper() == "WITHDRAW MONEY" || userSelection.ToUpper() == "WITHDRAW" || userSelection.ToUpper() == "WITHDRAWAL")
@@ -31,20 +30,21 @@ namespace UnitTesting
                         Console.WriteLine("How much would you like to withdraw?");
                         string withdrawalInput = Console.ReadLine();
 
-                        newBalance = withdrawMoney(balance, withdrawalInput);
-
-                        balance = Convert.ToDecimal(newBalance);
+                        string returnedValue = withdrawMoney(currentBalance, withdrawalInput);
+                        currentBalance = displayBalance(currentBalance, returnedValue);
                     }
                     catch (Exception e)
                     {
+                        Console.Clear();
                         Console.WriteLine($"Something went wrong: {e}");
                         Console.WriteLine("Press any key to continue");
                         Console.ReadKey();
+                        Console.Clear();
+                        displayBalance(currentBalance, Convert.ToString(currentBalance));
                     }
                     finally
                     {
-                        Console.Clear();
-                        displayBalance(balance);
+                        userSelection = displayMenu();
                     }
                 }
 
@@ -55,20 +55,21 @@ namespace UnitTesting
                         Console.WriteLine("How much would you like to deposit?");
                         string depositInput = Console.ReadLine();
 
-                        newBalance = addMoney(balance, depositInput);
-
-                        balance = Convert.ToDecimal(newBalance);
+                        string returnedValue = addMoney(currentBalance, depositInput);
+                        currentBalance = displayBalance(currentBalance, returnedValue);
                     }
                     catch (Exception e)
                     {
+                        Console.Clear();
                         Console.WriteLine($"Something went wrong: {e}");
                         Console.WriteLine("Press any key to continue");
                         Console.ReadKey();
+                        Console.Clear();
+                        displayBalance(currentBalance, Convert.ToString(currentBalance));
                     }
                     finally
                     {
-                        Console.Clear();
-                        displayBalance(balance);
+                        userSelection = displayMenu();
                     }
                 }
 
@@ -79,26 +80,43 @@ namespace UnitTesting
 
                 else
                 {
-                    Console.WriteLine("Please make a valid selection.  Press any key to continue.");
-                    Console.ReadKey();
-                    Console.Clear();
-                    displayBalance(balance);
+                    Console.WriteLine("Please make a valid selection.");
+                    userSelection = Console.ReadLine();
                 }
 
             } while (execute == true);
         }
 
+        /// <summary>
+        /// This method will display the user's current balance at the top of the screen.
+        /// If the withdrawMoney or addMoney methods return an error this will display the error instead.
+        /// </summary>
+        /// <param name="currentBalance">User's current balance.</param>
+        /// <param name="returnedValue">Value returned from the withdrawMoney or addMoney methods.</param>
+        /// <returns>User's task selection.</returns>
+        public static decimal displayBalance(decimal currentBalance, string returnedValue)
+        {
+            Console.Clear();
+            try
+            {
+                currentBalance = Convert.ToDecimal(returnedValue);
+
+                Console.WriteLine($"Your available balance is: {currentBalance.ToString("C")}");
+                return currentBalance;
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine($"{returnedValue}");
+                return currentBalance;
+            }
+        }
 
         /// <summary>
-        /// This method will display the user's current balance at the top of the screen,
-        /// followed by a menu with the four options that the user has for interacting with the app.
-        /// It will return the user's input to Main so that the app can follow up.
+        /// Displays the menu and returns the user's selection.
         /// </summary>
-        /// <param name="balance">User's current balance.</param>
-        /// <returns>User's task selection.</returns>
-        public static string displayBalance(decimal balance)
+        /// <returns>User's selection.</returns>
+        public static string displayMenu()
         {
-            Console.WriteLine($"Your available balance is: {balance.ToString("C")}");
             Console.WriteLine();
             Console.WriteLine("1. View Balance");
             Console.WriteLine("2. Withdraw Money");
@@ -141,7 +159,7 @@ namespace UnitTesting
             }
             catch (FormatException)
             {
-                throw new System.ArgumentException("Withdrawal amount MUST be a positive number.");
+                throw;
             }
             catch (OverflowException)
             {
@@ -178,7 +196,7 @@ namespace UnitTesting
             }
             catch (FormatException)
             {
-                throw new System.ArgumentException("Deposit MUST be a positive number.");
+                throw;
             }
             catch (OverflowException)
             {
