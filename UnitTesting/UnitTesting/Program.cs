@@ -9,34 +9,43 @@ namespace UnitTesting
             bool execute = true;
             string userSelection;
             decimal balance = 2000.32659M;
+            string newBalance;
 
             Console.WriteLine("Welcome to Bank of CF!");
             Console.WriteLine();
-            displayBalance(balance);
-            Console.WriteLine();
-            Console.WriteLine("Please make a selection from the following commands:");
-            userSelection = selectionPrompt();
+            userSelection = displayBalance(balance);
 
             do
             {
 
-                if(userSelection.ToUpper() == "1" || userSelection.ToUpper() == "VIEW BALANCE" || userSelection.ToUpper() == "VIEW" || userSelection.ToUpper() == "BALANCE")
+                if (userSelection.ToUpper() == "1" || userSelection.ToUpper() == "VIEW BALANCE" || userSelection.ToUpper() == "VIEW" || userSelection.ToUpper() == "BALANCE")
                 {
                     Console.Clear();
-                    displayBalance(balance);
-                    Console.WriteLine("Please make another selection:");
-                    userSelection = selectionPrompt();
+                    userSelection = displayBalance(balance);
                 }
 
                 else if (userSelection.ToUpper() == "2" || userSelection.ToUpper() == "WITHDRAW MONEY" || userSelection.ToUpper() == "WITHDRAW" || userSelection.ToUpper() == "WITHDRAWAL")
                 {
-                    decimal value = 0;
-                    balance = Convert.ToDecimal(withdrawMoney(balance, value));
+                    try
+                    {
+                        Console.WriteLine("How much would you like to withdraw?");
+                        string withdrawalInput = Console.ReadLine();
 
-                    Console.Clear();
-                    displayBalance(balance);
-                    Console.WriteLine("Please make another selection:");
-                    userSelection = selectionPrompt();
+                        newBalance = withdrawMoney(balance, withdrawalInput);
+
+                        balance = Convert.ToDecimal(newBalance);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Something went wrong: {e}");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadKey();
+                    }
+                    finally
+                    {
+                        Console.Clear();
+                        displayBalance(balance);
+                    }
                 }
 
                 else if (userSelection.ToUpper() == "3" || userSelection.ToUpper() == "ADD MONEY" || userSelection.ToUpper() == "ADD" || userSelection.ToUpper() == "DEPOSIT")
@@ -45,8 +54,6 @@ namespace UnitTesting
                     balance = Convert.ToDecimal(addMoney(balance, value));
                     Console.Clear();
                     displayBalance(balance);
-                    Console.WriteLine("Please make another selection:");
-                    userSelection = selectionPrompt();
                 }
 
                 else if (userSelection.ToUpper() == "4" || userSelection.ToUpper() == "EXIT" || userSelection.ToUpper() == "QUIT" || userSelection.ToUpper() == "CLOSE" || userSelection.ToUpper() == "END")
@@ -56,24 +63,27 @@ namespace UnitTesting
 
                 else
                 {
-                    Console.WriteLine("Please make a valid selection.");
-                    Console.WriteLine();
+                    Console.WriteLine("Please make a valid selection.  Press any key to continue.");
+                    Console.ReadKey();
+                    Console.Clear();
                     displayBalance(balance);
-                    userSelection = selectionPrompt();
                 }
 
             } while (execute == true);
-
-
         }
 
+
         /// <summary>
-        /// This method will display a menu with the four options that the user has for interacting with the app.  
-        /// It will return the user's input to Main so that the app can follow up. 
+        /// This method will display the user's current balance at the top of the screen,
+        /// followed by a menu with the four options that the user has for interacting with the app.
+        /// It will return the user's input to Main so that the app can follow up.
         /// </summary>
-        /// <returns></returns>
-        public static string selectionPrompt()
+        /// <param name="balance">User's current balance.</param>
+        /// <returns>User's task selection.</returns>
+        public static string displayBalance(decimal balance)
         {
+            Console.WriteLine($"Your available balance is: {balance.ToString("C")}");
+            Console.WriteLine();
             Console.WriteLine("1. View Balance");
             Console.WriteLine("2. Withdraw Money");
             Console.WriteLine("3. Add Money");
@@ -83,39 +93,39 @@ namespace UnitTesting
         }
 
         /// <summary>
-        /// This simple method will convert the balance parameter into a string and display it on the console.
-        /// </summary>
-        /// <param name="balance">User's current balance.</param>
-        public static void displayBalance(decimal balance)
-        {
-            Console.WriteLine($"Your available balance is: {balance.ToString("C")}");
-            Console.WriteLine();
-        }
-
-        /// <summary>
-        /// This will take the user's current balance and add subtract the amount of their withdrawal, returning their new balance.  The user cannot make negative withdrawals.
+        /// This will take the user's current balance as a string, convert it to a decimal,
+        /// and add subtract the amount of their withdrawal, returning their new balance.
+        /// The user cannot make negative withdrawals or put their balance into the negative.
         /// </summary>
         /// <param name="balance">User's current balance</param>
         /// <param name="value">Amount of money the user wishes to withdraw.  Cannot be negative.  Cannot be more than balance.</param>
-        /// <returns>New balance after withdraw is removed.</returns>
-        public static string withdrawMoney(decimal balance, decimal value)
+        /// <returns>New balance after withdraw is removed, or error message if operation fails.</returns>
+        public static string withdrawMoney(decimal balance, string value)
         {
-            if(value < 0)
+            string newBalance;
+            try
             {
-                return "Cannot withdraw a negative amount.";
-            }
+                decimal withdrawalValue = Convert.ToDecimal(value);
 
-            decimal newBalance = (balance - value);
-
-            if(newBalance >= 0)
-            {
+                if (withdrawalValue < 0)
+                {
+                    newBalance = "Cannot withdraw a negative amount.";
+                }
+                else if ((balance - withdrawalValue) < 0)
+                {
+                    newBalance = "Cannot withdraw.  Your balance cannot be negative.";
+                }
+                else
+                {
+                    newBalance = Convert.ToString(balance - withdrawalValue);
+                }
                 return newBalance.ToString();
             }
-
-            else
+            catch (FormatException)
             {
-                return "Cannot withdraw.  Your balance cannot be negative.";
+                throw new System.ArgumentException("Withdrawal amount must be a positive number.");
             }
+
         }
 
         /// <summary>
@@ -126,7 +136,7 @@ namespace UnitTesting
         /// <returns>New balance after deposit is added.</returns>
         public static string addMoney(decimal balance, decimal value)
         {
-            if(value < 0)
+            if (value < 0)
             {
                 return "Cannot deposit a negative amount.";
             }
